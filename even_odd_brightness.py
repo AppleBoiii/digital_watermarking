@@ -18,29 +18,6 @@ def sinFunc(x): #function to type instead of typing out this sinusoid
     y = (int(MIDDLE+(75*math.sin(x)))) 
     return y
 
-def drawSinforImg():
-    while(True):
-        ret, frame = VIDEO.read()
-        if frame is None:
-            continue
-        for x in range(WIDTH): #changes the colors of the pixels in a sin shape
-            y = (int(MIDDLE+(75*math.sin(x))))
-            frame[y-75:y, x, :] = 0
-
-            '''
-            makes everything but the sin wave blue
-            frame[0:y-75, x, 2] = 0
-            frame[0:y-75, x, 1] = 0
-            frame[y:, x, 2] = 0
-            frame[y:, x, 1] = 0
-            '''
-        cv2.imshow('frame', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    VIDEO.release()
-    cv2.destroyAllWindows()
-
 def binaryString(msg): #takes the message and returns the binary version of it
 	output = ""
 
@@ -158,7 +135,7 @@ def imgDecode():
 msg = binaryString(b"boof")
 print(msg)
 
-#encode(msg)
+encode(msg)
 print("\n")
 
 # print("decoding...")

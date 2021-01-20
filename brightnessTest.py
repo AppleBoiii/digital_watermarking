@@ -1,6 +1,14 @@
 import cv2
 import numpy as np
-import math 
+import math
+import pandas as pd
+
+# VIDEO = cv2.VideoCapture("test-tube.mp4")
+# WIDTH = VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH)
+# WIDTH = (int)(WIDTH)
+# HEIGHT = VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT) 
+# HEIGHT = (int)(HEIGHT)
+# MIDDLE = (int)(HEIGHT/2)
 
 #average of pixels
 def brightness(x=int(512/2), y=int(512/2), img=None):
@@ -20,12 +28,14 @@ def getBrightness(x, y, img):
 
     return brightness
 
-img = cv2.imread("Lenna.png")
 
-# img[:, :, 0] = 255
-# img[:, :, 1] = 0
-# img[:, :, 2] = 0
+table = []
+for x in range(256):
+    value1 = x%10
+    value2 = x%20
 
-# cv2.imshow('Lenna', img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+    table.append([value1, value2, x])
+
+for x in range(len(table)):
+    print(table[x])
+    print("\n")
