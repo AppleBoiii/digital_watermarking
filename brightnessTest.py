@@ -3,6 +3,11 @@ import numpy as np
 import math
 import pandas as pd
 
+'''
+this isn't anything important
+'''
+
+
 # VIDEO = cv2.VideoCapture("test-tube.mp4")
 # WIDTH = VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH)
 # WIDTH = (int)(WIDTH)

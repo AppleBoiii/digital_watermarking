@@ -18,6 +18,10 @@ def sinFunc(x): #function to type instead of typing out this sinusoid
     y = (int(MIDDLE+(75*math.sin(x)))) 
     return y
 
+def drawSinforImg(x):
+    y = (int((512/2)+(75*math.sin(x)))) 
+    return y
+    
 def binaryString(msg): #takes the message and returns the binary version of it
 	output = ""
 
@@ -48,10 +52,10 @@ def encode(msg):
                 y = sinFunc(x)
 
                 try:
-                    bit = msg.pop()             #odd pixels = 1, even pixels = 0
-                    if brightness(x, y, frame)%2==0 and bit==1: 
+                    bit = msg.pop(0)             #odd pixels = 1, even pixels = 0
+                    if brightness(x, y, frame)%2==0 and bit=="1": 
                         frame[y, x, :] += 1
-                    elif brightness(x, y, frame)%2==1 and bit==0:
+                    elif brightness(x, y, frame)%2==1 and bit=="0":
                         frame[y, x, :] += 1
                 except:
                     continue
@@ -135,10 +139,10 @@ def imgDecode():
 msg = binaryString(b"boof")
 print(msg)
 
-encode(msg)
+#encode(msg)
 print("\n")
 
-# print("decoding...")
-#decode(ENCODED_NAME)
+print("decoding...")
+decode(ENCODED_NAME)
 
 #imgDecode()
