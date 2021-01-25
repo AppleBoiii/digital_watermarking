@@ -4,6 +4,7 @@ from numpy.core.shape_base import block
 import pandas as pd
 import math
 
+SIZE_OF_BLOCK = 8
 VIDEO = "test-tube.mp4"
 VIDEO = cv2.VideoCapture(VIDEO)
 
@@ -45,13 +46,13 @@ need to be able to get the brightness of this block, and compare it the equivale
 '''
 
 def getBlocksBrightness(vid_frame, enc_frame):
-    NUM_OF_SQUARES = (int)((HEIGHT * WIDTH) / (16*16))
-    x, y = 16, 16
+    NUM_OF_SQUARES = (int)((HEIGHT * WIDTH) / (SIZE_OF_BLOCK*SIZE_OF_BLOCK))
+    x, y = SIZE_OF_BLOCK, SIZE_OF_BLOCK
     squares_brightness = []
     SQUARE_COUNT = 0
     while SQUARE_COUNT != NUM_OF_SQUARES:
-        norm_square = vid_frame[(y-16):y, (x-16):x, :]
-        enc_square = enc_frame[(y-16):y, (x-16):x, :]
+        norm_square = vid_frame[(y-SIZE_OF_BLOCK):y, (x-SIZE_OF_BLOCK):x, :]
+        enc_square = enc_frame[(y-SIZE_OF_BLOCK):y, (x-SIZE_OF_BLOCK):x, :]
 
         norm_square_brightness = brightnessBlock(norm_square)
         enc_square_brightness = brightnessBlock(enc_square)
@@ -60,10 +61,10 @@ def getBlocksBrightness(vid_frame, enc_frame):
         SQUARE_COUNT += 1
         
         if x >= WIDTH:
-            y += 16
-            x = 16
+            y += SIZE_OF_BLOCK
+            x = SIZE_OF_BLOCK
         else:
-            x += 16
+            x += SIZE_OF_BLOCK
     
     return squares_brightness
 
@@ -94,5 +95,5 @@ while(True):
 arr = np.array(data)
 df = pd.DataFrame(arr, columns = ["1", "2"])
 
-df.to_csv("brightness_comparisons.csv")
+df.to_csv(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}.csv")
 print("Excel sheet saved.")

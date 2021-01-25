@@ -35,6 +35,7 @@ Some 7%.
 I swapped ways to get brightness. Same results.
 
 I recorded the changes in brightness between the normal video and encoded video. I split the videos into 16x16 blocks, and took the average
-pixel brightness of those blocks. I also got the individual change in brightness of every pixel as an aside. I put all this in an excel sheet but there
-are too many entries to graph. 
+pixel brightness of those blocks. I also got the individual change in brightness of every pixel as an aside. I went and saved graphs of these
+excel sheets as SVGs. Tbh there looks like there are some spots to use rather than others, but for the most part they all seem to have changed
+a similar amount. 
 
