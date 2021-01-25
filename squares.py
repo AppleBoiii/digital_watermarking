@@ -2,16 +2,18 @@ import cv2
 import numpy as np
 import math
 
-# VIDEO_NAME = input("Gimme video name + file extension: ")
+
+#VIDEO_NAME = input("Gimme video name + file extension: ")
 VIDEO_NAME = "test-tube.mp4"
-ENCODED_NAME = "encoded.avi"
+ENCODED_NAME = "encoded.mp4"
 #ENCODED_NAME = input("give desired name of encoded video")
 
-#gets width, height, and middle-height of the image
+#gets width, height, and middles  of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
 WIDTH = (int)(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
 HEIGHT = (int)(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
-MIDDLE = (int)(HEIGHT/2)
+MIDDLE_Y = (int)(HEIGHT/2)
+MIDDLE_X = (int)(WIDTH/2)
 
 #fps and nums of frames if needed
 FPS = int(VIDEO.get(cv2.CAP_PROP_FPS))
@@ -43,7 +45,7 @@ def findSquares():
                 j = FRAME_COUNT
                 k = j+1
 
-            for y in range(MIDDLE-10, MIDDLE+10):
+            for y in range(MIDDLE_Y-10, MIDDLE_Y+10):
                 for x in range(j, k):
                     frame[y, x, :] = COLOR
         else:
@@ -56,7 +58,7 @@ def findSquares():
             break
 
 def encode(msg):
-    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'MPEG') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
     msg = list(msg)
 
     FRAME_COUNT = 0
@@ -84,14 +86,17 @@ def encode(msg):
                 COLOR = 255
             else:
                 pass
-
-            for y in range(MIDDLE-10, MIDDLE+10):
+            
+            '''
+            for y in range(MIDDLE_Y-10, MIDDLE_Y+10):
                 for x in range(j, k):
                     frame[y, x, :] = COLOR
-        else:
-            break
+            '''
 
-        # cv2.imshow('frame', frame)
+        for x in range(MIDDLE_X-3, MIDDLE_X+3):
+            frame[MIDDLE_Y, x, :] = COLOR
+
+        cv2.imshow('frame', frame)
         FRAME_COUNT += 1
         encodedVideo.write(frame)
 
@@ -121,10 +126,16 @@ def decode():
                 k = j + 1
             
             whiteCount = 0 #use this to count how many of pixels within the area I'm checking are a certain color
-            for y in range(MIDDLE-10, MIDDLE+10):
+            '''
+            for y in range(MIDDLE_Y-10, MIDDLE_Y+10):
                 for x in range(j, k):
                     print(frame[y,x,:])
                     if (200 < frame[y, x, :]).all():
+                        whiteCount += 1
+            '''
+
+            for x in range(MIDDLE_X-3, MIDDLE_X+3):
+                if (200 < frame[MIDDLE_Y, x, :]).all():
                         whiteCount += 1
 
             if whiteCount >= 1:
@@ -143,10 +154,10 @@ def decode():
 
 #getSquare()
 x = binaryString(b"there is a secret here")
-#encode(x)
+encode(x)
 
-x = decode()
-print(x)
+#x = decode()
+#print(x)
 
 
 

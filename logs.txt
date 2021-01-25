@@ -22,3 +22,19 @@ To Decode:
 
 This method ended up working well. Although I had to be a little more vague with the decoding, if every pixel had each color value > 200, I counted that as white.
 Then, anything less than that would be considered black and marked as a 1. I think this works. Now I want to see how far down I can scale this.
+
+Since that worked, I put a 6 long line in the middle of the video. Same as ebfore, white pixel = 0, black pixel = 1. The message was still there,
+but a little damaged. 
+
+01110100011010000110010101110010011001010010000001101001011100110010000001101001001000000111001101100101011000110111101001100101011101000010000001101000011001010111001001100101 
+"there is i seczet here"
+
+I made compare.py and compared the pixel values of the first frame of the video to the encoded video. The pixels were only changed within 5%. 
+Some 7%.
+
+I swapped ways to get brightness. Same results.
+
+I recorded the changes in brightness between the normal video and encoded video. I split the videos into 16x16 blocks, and took the average
+pixel brightness of those blocks. I also got the individual change in brightness of every pixel as an aside. I put all this in an excel sheet but there
+are too many entries to graph. 
+
