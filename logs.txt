@@ -39,3 +39,23 @@ pixel brightness of those blocks. I also got the individual change in brightness
 excel sheets as SVGs. Tbh there looks like there are some spots to use rather than others, but for the most part they all seem to have changed
 a similar amount. 
 
+The changes in brightness showed that they only changed by a max of 3. So I tried to make the encoding based on even / odd multiples greater than 3.
+This did not work very well for messages since they were still changed. 
+
+-------
+On even blocks, use four. On odd blocks, use five. 
+If the bit is a 1, change the brightness to the nearest odd multiple of 4 or 5 
+If the bit is 0, change the brightness to the nearest even multiple of 4 or 5
+
+To encode, check if brightness/N is a multiple. If not we can assume it is the closest one. So if N is like 13 and brightness is like 16
+we will say it is probably 13 and not 26. That means that the multiple is odd and there is a 1 stored there. If the multiple is even, there is a o.
+
+This did not work well. I encoded the message in every block until I ran out of blocks in a frame, then split that really big string of 1 and 0s
+according to the length of the original binary message. That way I could compare which blocks yielded the more accurateness. It seemed random, but for this
+video I figured out the 704th block was accurate up to 8 bits. So I have a new idea:
+
+The message is 32 bits long. I will split into sections of 4. Then, for four frames, I will encode exclusively around that block. I think it might be
+accurate around those areas so long as the frames dont change too much. 
+
+This did not work. This actually somehow worked worse. Will check by later why it did not work. 
+

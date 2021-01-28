@@ -33,14 +33,142 @@ def getBrightness(x, y, img):
 
     return brightness
 
+def decodeTest(y):
+    N = 11
 
-table = []
-for x in range(256):
-    value1 = x%10
-    value2 = x%20
+    remainder = y%N
+    lowerMultiple = y-remainder
+    upperMultiple = y+(N-remainder)
+    x = 0
 
-    table.append([value1, value2, x])
+    #figure out what to do when its less than 8
+    if y - lowerMultiple > upperMultiple - y:
+        x = upperMultiple
+    
+    else:
+        x = lowerMultiple
+    
+    print(x)
 
-for x in range(len(table)):
-    print(table[x])
-    print("\n")
+    x /= N
+
+    print(x)
+
+def encodeTest(y):
+    N = 11
+    remainder = y % N
+
+    lower = y - remainder
+    upper= y + (N-remainder)
+
+    oddMultiple, evenMultiple = 0,0
+
+    if lower%2 == 0:
+        evenMultiple = lower
+        oddMultiple = upper
+    else:
+        evenMultiple = upper
+        oddMultiple = lower
+
+    
+    print(evenMultiple)    
+    numberToAdd = oddMultiple - y
+    numbertoAdd2 = evenMultiple - y
+
+    print(numberToAdd)
+    print(numbertoAdd2)
+
+while(True):
+    x = input("Yes: ")
+    x = float(x)
+    x = int(x)
+    encodeTest(x)
+
+
+
+
+# img = cv2.imread("Lenna.png")
+# view = np.uint8([255, 255, 255])
+# y = np.uint8([10])
+# print(view)
+# view = cv2.add(view, -1.4)
+# print(view)
+
+'''
+92.4
+x = (int)(92.4)
+x = 92, make this 90
+
+87 - 93 
+
+90 / 5 = 17 - 18 --> 0
+90 / 4 = 22.5
+
+
+
+
+51 and 0
+92 and 1
+
+TO ENCODE:
+On even blocks, use four. On odd blocks, use five. 
+If the bit is a 1, change the brightness to the nearest odd multiple of 4 or 5 
+If the bit is 0, change the brightness to the nearest even multiple of 4 or 5
+
+92 -> 90
+
+90/5 = 18
+
+87/5 = 17.4
+93/5 = 18.6
+
+N = 5
+
+if block%2 == 0:
+    N = 4
+
+bit = bit_array.pop()
+
+brightness = getBrightness()
+remainder = brightness % N
+
+lowerMultiple = brightness - remainder
+upperMultiple = brightness + (N-remainder)
+
+oddMultiple = 0
+evenMultiple = 0
+
+if lower%2 == 0:
+    evenMultiple = lowerMultiple
+    oddMultiple = upperMultiple
+else:
+    evenMultiple = upperMultiple
+    oddMultiple = lowerMultiple
+
+if bit == 1:
+    numberToAdd[:, :] = oddMultiple - brightness
+
+    img[:, :] = cv2.add(img, numberToAdd)
+else:
+    numberToAdd[:, :] = evenMultiple - brightness
+
+    img[:, :] = cv2.add(img, numberToAdd)
+
+
+
+TO DECODE:
+Divide brightness by N and make int. If even make 0. If odd make 1.
+
+N = 5
+if block%2 == 0:
+    N = 4
+
+brightness = getBrightness()
+num = (int)(brightness/N)
+if num % 2 == 0:
+    message += 0
+else:
+    num % 2 == 1
+'''
+ 
+

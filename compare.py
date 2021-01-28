@@ -5,6 +5,7 @@ import pandas as pd
 import math
 
 SIZE_OF_BLOCK = 8
+
 VIDEO = "test-tube.mp4"
 VIDEO = cv2.VideoCapture(VIDEO)
 
