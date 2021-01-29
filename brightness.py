@@ -78,6 +78,13 @@ def getBlocks(vid_frame):
     
     return block_brightness_list
 
+
+'''
+I use this to break the org video into frames and re-stich it back together and save into new file
+so I can later see how much the pixels changed by the video compression. 
+Theoretically if i know how much they change by compression I can sort-of plan how I want to encode into the 
+original file. 
+'''
 def emptyEncode():
     #MP42 for mp4
     #DIVX for avi
