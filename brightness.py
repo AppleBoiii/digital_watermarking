@@ -6,7 +6,7 @@ import math
 # VIDEO_NAME = input("Gimme video name + file extension: ")
 VIDEO_NAME = "test-tube.mp4"
 # ENCODED_NAME = input("give desired name of encoded video (rn only .avi extensions work: ")
-ENCODED_NAME = "encoded.mp4"
+ENCODED_NAME = "encoded.avi"
 
 #gets width, height, and middle-height of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
@@ -19,6 +19,10 @@ MIDDLE = (int)(HEIGHT/2)
 N = 16
 SIZE_OF_BLOCK = N
 NUM_OF_BLOCKS = (int)((HEIGHT * WIDTH) / (SIZE_OF_BLOCK*SIZE_OF_BLOCK))
+
+FRAME_COUNT = 40
+BLOCK_VALUES = [2824, 2739, 2817, 2562]
+BLOCK_VALUES = np.array(BLOCK_VALUES)
 
 def binaryString(msg): #takes the message and returns the binary version of it
 	output = ""
@@ -74,60 +78,100 @@ def getBlocks(vid_frame):
     
     return block_brightness_list
 
+def emptyEncode():
+    #MP42 for mp4
+    #DIVX for avi
+    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    while(True):
+        ret, frame = VIDEO.read()
+        if ret:
+            encodedVideo.write(frame)
+        else:
+             break
+    
+    VIDEO.release()
+    encodedVideo.release()
+    print("Success!")
+    cv2.destroyAllWindows()
+
 def encode(msg):
     msg = list(msg)
     #MP42 for mp4
     #DIVX for avi
     encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'MP42') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
 
-    frame_count = 0
+    frame_num = 0
 
     while(True):
         ret, frame = VIDEO.read()
-
+        '''
+        Between frames 40 - 43, I want to encode 8 bits of data in the specific macroblocks I listed in the array above at the top of 
+        my code. i specifies the index of that array, so there are different macroblocks for different frames. i changes depending on the frame
+        the video is on. 
+        '''
         if ret:
-            if frame_count > 39 and frame_count < 44:
+            if FRAME_COUNT <= frame_num <= FRAME_COUNT+3:
                 blocks = getBlocks(frame) #gets all the NxN blocks in this frame 
+                if frame_num == 40:
+                    i = 0
+                elif frame_num == 41:
+                    i = 1
+                elif frame_num == 42:
+                    i = 2
+                else:
+                    i = 3
                 for block in range(len(blocks)):
-                    if block > 704-32 and block <= 704-24:
-                        try:
-                            N = 7
+                    if block in range(BLOCK_VALUES[i]-8, BLOCK_VALUES[i]):
+                    # if BLOCK_VALUES[i]-7 <= block <= BLOCK_VALUES[i]:
+                        print(i)
+                    # try:
+                        N = 7
 
-                            # if block%2 == 0:
-                            #     N = 13
+                        # if block%2 == 0:
+                        #     N = 13
 
-                            bit = msg.pop()
+                        bit = msg.pop()
 
-                            brightness = int(blocks[block][1])
-                            remainder = brightness % N
+                        '''
+                        Basically, I take the brightness of the block and get the remainder of it divided by N. If the bit I want to encode is a 0 
+                        or 1 depends what I do next. If 0, I want to store it in the nearest even multiple of N. If 1, the nearest odd multiple of N.
+                        So I want to do some math to figure out which multiple is which, and change the brightness to that value accordingly. 
 
-                            lower = brightness - remainder
-                            upper= brightness + (N-remainder)
+                        ''' 
 
-                            oddMultiple, evenMultiple = 0,0
+                        brightness = int(blocks[block][1])
+                        remainder = brightness % N
 
-                            if lower%2 == 0:
-                                evenMultiple = lower
-                                oddMultiple = upper
-                            else:
-                                evenMultiple = upper
-                                oddMultiple = lower
+                        lower = brightness - remainder
+                        upper= brightness + (N-remainder)
 
-                            if bit == 1:
-                                numberToAdd = oddMultiple - brightness
+                        oddMultiple, evenMultiple = 0,0
 
-                                frame[:, :] = cv2.add(frame, numberToAdd)
-                            else:
-                                numberToAdd = evenMultiple - brightness
+                        if lower%2 == 0:
+                            evenMultiple = lower
+                            oddMultiple = upper
+                        else:
+                            evenMultiple = upper
+                            oddMultiple = lower
 
-                                frame[:, :] = cv2.add(frame, numberToAdd)
+                        if bit == 1:
+                            numberToAdd = oddMultiple - brightness
 
-                        except:
-                            print("Something went wrong.")
-                            continue
+                            '''
+                            I feel like this may be working right. 
+                            '''
+                            frame[:, :] = cv2.add(frame, numberToAdd)
+                        else:
+                            numberToAdd = evenMultiple - brightness
+
+                            frame[:, :] = cv2.add(frame, numberToAdd)
+
+                        # except:
+                        #     print("Something went wrong.")
+                        #     continue
 
             encodedVideo.write(frame)
-            frame_count += 1
+            frame_num += 1
             # print(frame_count)
         else:
             break
@@ -145,16 +189,24 @@ def decode(videoFileName):
         return 0
     
     decodedMessageBinary = ""
-    frame_count = 0
+    frame_num = 0
 
     while(True):
         ret, frame = encoded.read()
 
         if ret:
-            if frame_count >= 40 and frame_count < 44:
+            if FRAME_COUNT <= frame_num <= FRAME_COUNT+3:
                 blocks = getBlocks(frame)
                 for block in range(len(blocks)):
-                    if block > 704-32 and block <= 704-24:
+                    if frame_num == 40:
+                        i = 0
+                    elif frame_num == 41:
+                        i = 1
+                    elif frame_num == 42:
+                        i = 2
+                    else:
+                        i = 3
+                    if block in range(BLOCK_VALUES[i]-8, BLOCK_VALUES[i]):
                         N = 7
                         # if block%2 == 0:
                         #     N = 13
@@ -191,7 +243,7 @@ def decode(videoFileName):
                     #         binaryList.append([decodedMessageBinary, block])
                     #     decodedMessageBinary = ""
                     #     count += 1
-            frame_count += 1
+            frame_num += 1
         else:
             break
 
@@ -203,15 +255,14 @@ def decode(videoFileName):
 #704 block best blocks to do stuff on
 
 
-msg = binaryString(b"h")
+msg = binaryString(b"hihi")
 print(f"The message is {msg}")
 print(len(msg))
 
-
 # encode(msg)
-# print("\n")
+# # print("\n")
 
-# print("decoding...")
-# decode(ENCODED_NAME)
+print("decoding...")
+decode(ENCODED_NAME)
 
 #imgDecode()

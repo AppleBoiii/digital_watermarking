@@ -59,3 +59,20 @@ accurate around those areas so long as the frames dont change too much.
 
 This did not work. This actually somehow worked worse. Will check by later why it did not work. 
 
+Okay so after mildly freaking out over everything else I have done:
+
+I made Excel sheets of brightnesses of 4 frames, comparing the initial brightness and the brightness after exported through cv2. I looked
+at the macroblocks that had the least amount of change in every frame, and decided to encoded specifically into those frames. I took 8 of these
+blocks per frame, so I could encode 8 bits of data per frame. These were the blocks for different frames:
+
+Encode 8 bits in each of these frames:
+    frame 40:
+        2824 - 8
+    frame 41:
+        2742 - 8
+    frame 42:
+        2817 - 8
+    frame 43:
+        2562 - 8
+
+This did not work very well. Very tired will look at later. 

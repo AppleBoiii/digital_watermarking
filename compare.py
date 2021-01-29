@@ -1,10 +1,9 @@
 import cv2 
 import numpy as np
-from numpy.core.shape_base import block
 import pandas as pd
 import math
 
-SIZE_OF_BLOCK = 8
+SIZE_OF_BLOCK = 16
 
 VIDEO = "test-tube.mp4"
 VIDEO = cv2.VideoCapture(VIDEO)
@@ -16,6 +15,8 @@ WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
 ENCODED= "encoded.avi"
 ENCODED = cv2.VideoCapture(ENCODED)
 ENC_NUM_OF_FRAMES = int(ENCODED.get(cv2.CAP_PROP_FRAME_COUNT))
+
+FRAME_COUNT = 40
 
 def brightness(x=int(512/2), y=int(512/2), img=None):
     if img is None:
@@ -71,30 +72,33 @@ def getBlocksBrightness(vid_frame, enc_frame):
 
 data = []
 frame_count = 0
-while(True):
-    vid_ret, vid_frame = VIDEO.read()
-    enc_ret, enc_frame = ENCODED.read()
+def getData(frame):
+    frame_count = 0
+    data = []
+    while(True):
+        vid_ret, vid_frame = VIDEO.read()
+        enc_ret, enc_frame = ENCODED.read()
 
-    if vid_ret:
+        if vid_ret:
+            if frame_count == frame:
+                data = getBlocksBrightness(vid_frame, enc_frame)
+                break
+
+                #for getting individual pixel brightness
+                # for y in range(HEIGHT):
+                #     for x in range(WIDTH):
+                #         vid_pixel_brightness = brightness(x, y, vid_frame)
+                #         enc_pixel_brightness = brightness(x, y, enc_frame)
+
+                #         data.append([[vid_pixel_brightness, enc_pixel_brightness], [vid_pixel_brightness/enc_pixel_brightness]])
         
-        if frame_count == 75:
-            data = getBlocksBrightness(vid_frame, enc_frame)
+            frame_count += 1
+    return data
 
-            #for getting individual pixel brightness
-            # for y in range(HEIGHT):
-            #     for x in range(WIDTH):
-            #         vid_pixel_brightness = brightness(x, y, vid_frame)
-            #         enc_pixel_brightness = brightness(x, y, enc_frame)
-
-            #         data.append([[vid_pixel_brightness, enc_pixel_brightness], [vid_pixel_brightness/enc_pixel_brightness]])
-
-        frame_count += 1
-        if frame_count > 75:
-            break
-
-
-arr = np.array(data)
+FRAME_COUNT += 3
+print("starting...")
+arr = np.array(getData(FRAME_COUNT))
 df = pd.DataFrame(arr, columns = ["1", "2"])
 
-df.to_csv(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}.csv")
+df.to_csv(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}_frame{FRAME_COUNT}.csv")
 print("Excel sheet saved.")
