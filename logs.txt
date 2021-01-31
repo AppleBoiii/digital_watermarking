@@ -74,6 +74,7 @@ Encode 8 bits in each of these frames:
         2562 - 8
 
 This did not work very well. Very tired will look at later. 
+------
 
 Okay so I'm going to try the above again, but this time I'm only going to store one bit in the least touched block in frame. If that works,
 we will go up. 
@@ -85,3 +86,6 @@ the time I have trying the past few things. :(
 Since that works, I am going to try the previous method of 8 bits per frame. That also worked.
 
 So now I"m going to clean out the code and delete the big chunks I rewrote. 
+
+I want to encode in the blocks that are changed the least. So now I'm going to look at 50 frames(2 seconds of video), and put the ones that changed 
+the least . 

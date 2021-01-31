@@ -6,7 +6,7 @@ import math
 # VIDEO_NAME = input("Gimme video name + file extension: ")
 VIDEO_NAME = "test-tube.mp4"
 # ENCODED_NAME = input("give desired name of encoded video (rn only .avi extensions work: ")
-ENCODED_NAME = "encoded.avi"
+ENCODED_NAME = "encoded.mp4"
 
 #gets width, height, and middle-height of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
@@ -239,13 +239,10 @@ def decode(videoFileName):
         else:
             break
 
-    #print(binaryList[0])
     decodedMessageBinary = decodedMessageBinary[::-1]
     print(decodedMessageBinary)
+    return decodedMessageBinary
 
-
-#remember first 8 bits and 22th byte
-#704 block best blocks to do stuff on
 
 
 msg = binaryString(b"hihi")
@@ -255,6 +252,9 @@ print(len(msg))
 # print("\n")
 
 print("decoding...")
-decode(ENCODED_NAME)
+decoded = decode(ENCODED_NAME)
+
+if decoded == msg:
+    print(True)
 
 #imgDecode()

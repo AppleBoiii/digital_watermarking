@@ -70,8 +70,6 @@ def getBlocksBrightness(vid_frame, enc_frame):
     
     return squares_brightness
 
-data = []
-frame_count = 0
 def getData(frame):
     frame_count = 0
     data = []
@@ -84,18 +82,10 @@ def getData(frame):
                 data = getBlocksBrightness(vid_frame, enc_frame)
                 break
 
-                #for getting individual pixel brightness
-                # for y in range(HEIGHT):
-                #     for x in range(WIDTH):
-                #         vid_pixel_brightness = brightness(x, y, vid_frame)
-                #         enc_pixel_brightness = brightness(x, y, enc_frame)
-
-                #         data.append([[vid_pixel_brightness, enc_pixel_brightness], [vid_pixel_brightness/enc_pixel_brightness]])
-        
             frame_count += 1
     return data
 
-FRAME_COUNT += 3
+
 print("starting...")
 arr = np.array(getData(FRAME_COUNT))
 df = pd.DataFrame(arr, columns = ["1", "2"])
