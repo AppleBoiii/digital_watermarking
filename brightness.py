@@ -91,7 +91,7 @@ original file.
 def emptyEncode():
     #MP42 for mp4
     #DIVX for avi
-    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    encodedVideo = cv2.VideoWriter("empty_encoded.avi", cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
     while(True):
         ret, frame = VIDEO.read()
         if ret:
@@ -245,16 +245,16 @@ def decode(videoFileName):
 
 
 
-msg = binaryString(b"hihi")
-print(f"The message is {msg}")
-print(len(msg))
+emptyEncode()
+# msg = binaryString(b"hihi")
+# print(f"The message is {msg}")
+# print(len(msg))
 # encode(msg)
 # print("\n")
 
-print("decoding...")
-decoded = decode(ENCODED_NAME)
+# print("decoding...")
+# decoded = decode(ENCODED_NAME)
 
-if decoded == msg:
-    print(True)
+# if decoded == msg:
+#     print(True)
 
-#imgDecode()

@@ -88,4 +88,4 @@ Since that works, I am going to try the previous method of 8 bits per frame. Tha
 So now I"m going to clean out the code and delete the big chunks I rewrote. 
 
 I want to encode in the blocks that are changed the least. So now I'm going to look at 50 frames(2 seconds of video), and put the ones that changed 
-the least . 
+the least on a sheet.  
