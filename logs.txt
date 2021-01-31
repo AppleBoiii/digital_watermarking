@@ -59,8 +59,6 @@ accurate around those areas so long as the frames dont change too much.
 
 This did not work. This actually somehow worked worse. Will check by later why it did not work. 
 
-Okay so after mildly freaking out over everything else I have done:
-
 I made Excel sheets of brightnesses of 4 frames, comparing the initial brightness and the brightness after exported through cv2. I looked
 at the macroblocks that had the least amount of change in every frame, and decided to encoded specifically into those frames. I took 8 of these
 blocks per frame, so I could encode 8 bits of data per frame. These were the blocks for different frames:
@@ -76,3 +74,14 @@ Encode 8 bits in each of these frames:
         2562 - 8
 
 This did not work very well. Very tired will look at later. 
+
+Okay so I'm going to try the above again, but this time I'm only going to store one bit in the least touched block in frame. If that works,
+we will go up. 
+
+Encoding method has not been working this whole time. So the math I wrote to determine what the closest odd or even multiple was ended up being
+just wrong enough to only code in for even multiples. If I had paid more attention to this code and tested this out, I would not have spent
+the time I have trying the past few things. :(
+
+Since that works, I am going to try the previous method of 8 bits per frame. That also worked.
+
+So now I"m going to clean out the code and delete the big chunks I rewrote. 

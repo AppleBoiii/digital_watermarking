@@ -21,7 +21,7 @@ SIZE_OF_BLOCK = N
 NUM_OF_BLOCKS = (int)((HEIGHT * WIDTH) / (SIZE_OF_BLOCK*SIZE_OF_BLOCK))
 
 FRAME_COUNT = 40
-BLOCK_VALUES = [2824, 2739, 2817, 2562]
+BLOCK_VALUES = [2823, 2739, 2817, 2562]
 BLOCK_VALUES = np.array(BLOCK_VALUES)
 
 def binaryString(msg): #takes the message and returns the binary version of it
@@ -45,17 +45,42 @@ def getBrightness(x=int(512/2), y=int(512/2), img=None):
 these two functions work together
 get blocks returns a list of all the NxN blocks of the video, as well as the overall brightness of those blocks
 '''
-def getBrightnessOfBlocks(block):
-    avg_pixel_brightness = []
-    for j in range(len(block)):
-        for k in range(len(block)):
-            pixel_brightness = (sum(block[j, k, :]))/3
-            avg_pixel_brightness.append(pixel_brightness)
 
-    block_brightness = (sum(avg_pixel_brightness))/(len(avg_pixel_brightness))
+def getBlockBrightness(coords, frame):
+    brightnessList = []
+    x1, y1, x2, y2 = coords[0], coords[1], coords[2], coords[3]
 
-    return block_brightness
+    for y in range(y1, y2):
+        for x in range(x1, x2):
+            brightnessList.append(getBrightness(x,y, frame))
+    
+    sumOfBrightness = sum(brightnessList)
+    avgBrightness = sumOfBrightness / len(brightnessList)
 
+    return int(avgBrightness)
+
+def getBlocks(frame):
+    global NUM_OF_BLOCKS
+    global SIZE_OF_BLOCK
+    x, y = SIZE_OF_BLOCK, SIZE_OF_BLOCK
+    block_count = 0
+
+    block_list = []
+
+    while block_count != NUM_OF_BLOCKS:
+        block_list.append([x-SIZE_OF_BLOCK, y-SIZE_OF_BLOCK, x, y])
+
+        block_count += 1
+        if x >= WIDTH:
+            y += SIZE_OF_BLOCK
+            x = SIZE_OF_BLOCK
+        else:
+            x += SIZE_OF_BLOCK
+    
+    #print(len(block_list))
+    return block_list
+
+'''
 def getBlocks(vid_frame):
     global NUM_OF_BLOCKS
     BLOCK_COUNT = 0
@@ -67,7 +92,7 @@ def getBlocks(vid_frame):
 
         norm_block_brightness = getBrightnessOfBlocks(norm_block)
 
-        block_brightness_list.append([norm_block, norm_block_brightness])
+        block_brightness_list.append([norm_block])#, norm_block_brightness])
         BLOCK_COUNT += 1
         
         if x >= WIDTH:
@@ -77,6 +102,7 @@ def getBlocks(vid_frame):
             x += SIZE_OF_BLOCK
     
     return block_brightness_list
+'''
 
 
 '''
@@ -127,27 +153,21 @@ def encode(msg):
                     i = 2
                 else:
                     i = 3
-                for block in range(len(blocks)):
-                    if block in range(BLOCK_VALUES[i]-8, BLOCK_VALUES[i]):
-                    # if BLOCK_VALUES[i]-7 <= block <= BLOCK_VALUES[i]:
-                        print(i)
-                    # try:
-                        N = 7
 
-                        # if block%2 == 0:
-                        #     N = 13
+                for block in blocks:
+                    z = blocks.index(block)
+                    if BLOCK_VALUES[i]-7 <= z <= BLOCK_VALUES[i]:
+                    # if blocks.index(block) == BLOCK_VALUES[i]:
+                        x1, y1, x2, y2 = block[0],block[1], block[2], block[3]
+
+                        N = 7
 
                         bit = msg.pop()
 
-                        '''
-                        Basically, I take the brightness of the block and get the remainder of it divided by N. If the bit I want to encode is a 0 
-                        or 1 depends what I do next. If 0, I want to store it in the nearest even multiple of N. If 1, the nearest odd multiple of N.
-                        So I want to do some math to figure out which multiple is which, and change the brightness to that value accordingly. 
-
-                        ''' 
-
-                        brightness = int(blocks[block][1])
+                        brightness = getBlockBrightness([x1, y1, x2, y2], frame)
+                        #print(f"The initial brightness: {brightness}")
                         remainder = brightness % N
+                        #print(f"Remainder: {remainder}")
 
                         lower = brightness - remainder
                         upper= brightness + (N-remainder)
@@ -161,21 +181,33 @@ def encode(msg):
                             evenMultiple = upper
                             oddMultiple = lower
 
-                        if bit == 1:
+                        # print(f"Oddmultiple: {oddMultiple}")
+                        # print(f"evenmultiple: {evenMultiple}")
+
+                        if bit == "1":
                             numberToAdd = oddMultiple - brightness
+                            #print(numberToAdd)
+                            if numberToAdd < 0:
+                                frame[y1:y2, x1:x2, :] -= abs(numberToAdd)
+                            else:
+                                frame[y1:y2, x1:x2, :] += numberToAdd
 
                             '''
                             I feel like this may be working right. 
                             '''
-                            frame[:, :] = cv2.add(frame, numberToAdd)
+                            # frame[y1:y2, x1:x2, :] = cv2.add(frame[y1:y2, x1:x2, :], numberToAdd)
+
                         else:
                             numberToAdd = evenMultiple - brightness
+                            #print(numberToAdd)
+                            if numberToAdd < 0:
+                                frame[y1:y2, x1:x2, :] -= abs(numberToAdd)
+                            else:
+                                frame[y1:y2, x1:x2, :] += numberToAdd
 
-                            frame[:, :] = cv2.add(frame, numberToAdd)
-
-                        # except:
-                        #     print("Something went wrong.")
-                        #     continue
+                            # frame[y1:y2, x1:x2, :] = cv2.add(frame[y1:y2, x1:x2, :], numberToAdd)
+                        
+                        # print(getBlockBrightness([x1, y1, x2, y2], frame))
 
             encodedVideo.write(frame)
             frame_num += 1
@@ -204,57 +236,51 @@ def decode(videoFileName):
         if ret:
             if FRAME_COUNT <= frame_num <= FRAME_COUNT+3:
                 blocks = getBlocks(frame)
-                for block in range(len(blocks)):
-                    if frame_num == 40:
-                        i = 0
-                    elif frame_num == 41:
-                        i = 1
-                    elif frame_num == 42:
-                        i = 2
-                    else:
-                        i = 3
-                    if block in range(BLOCK_VALUES[i]-8, BLOCK_VALUES[i]):
-                        N = 7
-                        # if block%2 == 0:
-                        #     N = 13
+                if frame_num == 40:
+                    i = 0
+                elif frame_num == 41:
+                    i = 1
+                elif frame_num == 42:
+                    i = 2
+                else:
+                    i = 3
 
-                        '''
-                        brightness only changes by a max of -5 or +4
-                        so if use 12 or 13, then can figure out waht its meant to be
-                        ex. brightness = 14, well if that is encoded then it was encoded to be 12 not 24
-                        bc the pixels would not change by 10. 
-                        so correct the brightness and get the 1 or 0 out. 
-                        '''
-                        brightness = int(blocks[block][1])
+                for block in blocks:
+                    z = blocks.index(block)
+                    if BLOCK_VALUES[i]-7 <= z <= BLOCK_VALUES[i]:
+                    # if blocks.index(block) == BLOCK_VALUES[i]:
+                        N = 7
+                        x1 = block[0]
+                        y1 = block[1]
+                        x2 = block[2]
+                        y2 = block[3]
+
+                        brightness = getBlockBrightness([x1, y1, x2, y2], frame)
                         remainder = int(brightness%N)
                         lowerMultiple = brightness-remainder
                         upperMultiple = brightness+(N-remainder)
                         x = 0
 
-                        #figure out what to do when its less than 8
                         if brightness - lowerMultiple > upperMultiple - brightness:
                             x = upperMultiple
                         
                         else:
                             x = lowerMultiple
                         
-                        #x /= N
+                        
+                        x /= N
 
                         if x%2 == 0:
                             decodedMessageBinary += "0"
                         else:
                             decodedMessageBinary += "1"
 
-                    # if block > 0 and block%32==0:
-                    #     if count == 22:
-                    #         binaryList.append([decodedMessageBinary, block])
-                    #     decodedMessageBinary = ""
-                    #     count += 1
             frame_num += 1
         else:
             break
 
     #print(binaryList[0])
+    decodedMessageBinary = decodedMessageBinary[::-1]
     print(decodedMessageBinary)
 
 
@@ -265,9 +291,8 @@ def decode(videoFileName):
 msg = binaryString(b"hihi")
 print(f"The message is {msg}")
 print(len(msg))
-
 # encode(msg)
-# # print("\n")
+# print("\n")
 
 print("decoding...")
 decode(ENCODED_NAME)
