@@ -80,29 +80,6 @@ def getBlocks(frame):
     #print(len(block_list))
     return block_list
 
-'''
-def getBlocks(vid_frame):
-    global NUM_OF_BLOCKS
-    BLOCK_COUNT = 0
-    x, y = SIZE_OF_BLOCK, SIZE_OF_BLOCK
-    block_brightness_list = []
-
-    while BLOCK_COUNT != NUM_OF_BLOCKS:
-        norm_block = vid_frame[(y-SIZE_OF_BLOCK):y, (x-SIZE_OF_BLOCK):x, :]
-
-        norm_block_brightness = getBrightnessOfBlocks(norm_block)
-
-        block_brightness_list.append([norm_block])#, norm_block_brightness])
-        BLOCK_COUNT += 1
-        
-        if x >= WIDTH:
-            y += SIZE_OF_BLOCK
-            x = SIZE_OF_BLOCK
-        else:
-            x += SIZE_OF_BLOCK
-    
-    return block_brightness_list
-'''
 
 
 '''
@@ -157,7 +134,6 @@ def encode(msg):
                 for block in blocks:
                     z = blocks.index(block)
                     if BLOCK_VALUES[i]-7 <= z <= BLOCK_VALUES[i]:
-                    # if blocks.index(block) == BLOCK_VALUES[i]:
                         x1, y1, x2, y2 = block[0],block[1], block[2], block[3]
 
                         N = 7
@@ -165,9 +141,7 @@ def encode(msg):
                         bit = msg.pop()
 
                         brightness = getBlockBrightness([x1, y1, x2, y2], frame)
-                        #print(f"The initial brightness: {brightness}")
                         remainder = brightness % N
-                        #print(f"Remainder: {remainder}")
 
                         lower = brightness - remainder
                         upper= brightness + (N-remainder)
@@ -181,37 +155,23 @@ def encode(msg):
                             evenMultiple = upper
                             oddMultiple = lower
 
-                        # print(f"Oddmultiple: {oddMultiple}")
-                        # print(f"evenmultiple: {evenMultiple}")
 
                         if bit == "1":
                             numberToAdd = oddMultiple - brightness
-                            #print(numberToAdd)
                             if numberToAdd < 0:
                                 frame[y1:y2, x1:x2, :] -= abs(numberToAdd)
                             else:
                                 frame[y1:y2, x1:x2, :] += numberToAdd
-
-                            '''
-                            I feel like this may be working right. 
-                            '''
-                            # frame[y1:y2, x1:x2, :] = cv2.add(frame[y1:y2, x1:x2, :], numberToAdd)
 
                         else:
                             numberToAdd = evenMultiple - brightness
-                            #print(numberToAdd)
                             if numberToAdd < 0:
                                 frame[y1:y2, x1:x2, :] -= abs(numberToAdd)
                             else:
                                 frame[y1:y2, x1:x2, :] += numberToAdd
 
-                            # frame[y1:y2, x1:x2, :] = cv2.add(frame[y1:y2, x1:x2, :], numberToAdd)
-                        
-                        # print(getBlockBrightness([x1, y1, x2, y2], frame))
-
             encodedVideo.write(frame)
             frame_num += 1
-            # print(frame_count)
         else:
             break
     
