@@ -89,3 +89,7 @@ So now I"m going to clean out the code and delete the big chunks I rewrote.
 
 I want to encode in the blocks that are changed the least. So now I'm going to look at 50 frames(2 seconds of video), and put the ones that changed 
 the least on a sheet.  
+
+If I can find the ones I know changed the least, I can make the brightness changes extremely hard to notice. Like += 3 or something like this. 
+The average absolute difference in the first 50 frames is 1.88, so just encode in the macroblocks that change below the average, so the max brightness
+will change by in the encoding could possibly be as low as 2 or 3 in this test video. 

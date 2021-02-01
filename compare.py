@@ -79,7 +79,7 @@ def getData(frame):
         enc_ret, enc_frame = ENCODED.read()
         if vid_ret:
             if frame_count in range(1, frame+1):     #getting 50 frames
-                if not frame_count % 5:
+                if not frame_count % 10:
                     print(frame_count)
                 data = getBlocksBrightness(vid_frame, enc_frame)
                 data_list.append(data)
@@ -95,5 +95,5 @@ df = pd.DataFrame(arr)
 df = df.transpose() #flips columns and rows
 print(df)
 
-df.to_excel(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}_frame{FRAME_COUNT}.xlsk")
+df.to_excel(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}_frame{FRAME_COUNT}.xlsx")
 print("Excel sheet saved.")
