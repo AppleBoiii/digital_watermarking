@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import math 
-
+import binascii
 
 # VIDEO_NAME = input("Gimme video name + file extension: ")
 VIDEO_NAME = "test-tube.mp4"
@@ -133,7 +133,7 @@ def encode(msg):
 
                 for block in blocks:
                     z = blocks.index(block)
-                    if BLOCK_VALUES[i]-7 <= z <= BLOCK_VALUES[i]:
+                    if BLOCK_VALUES[i]-11 <= z <= BLOCK_VALUES[i]:
                         x1, y1, x2, y2 = block[0],block[1], block[2], block[3]
 
                         N = 7
@@ -207,7 +207,7 @@ def decode(videoFileName):
 
                 for block in blocks:
                     z = blocks.index(block)
-                    if BLOCK_VALUES[i]-7 <= z <= BLOCK_VALUES[i]:
+                    if BLOCK_VALUES[i]-11 <= z <= BLOCK_VALUES[i]:
                     # if blocks.index(block) == BLOCK_VALUES[i]:
                         N = 7
                         x1 = block[0]
@@ -245,16 +245,15 @@ def decode(videoFileName):
 
 
 
-emptyEncode()
-# msg = binaryString(b"hihi")
-# print(f"The message is {msg}")
-# print(len(msg))
+# emptyEncode()
+msg = binaryString(b"secret") #the result of this is 1 bit off. 
+print(f"The message is {msg}")
+print(len(msg))
 # encode(msg)
 # print("\n")
+print("decoding...")
+decoded = decode(ENCODED_NAME)
 
-# print("decoding...")
-# decoded = decode(ENCODED_NAME)
-
-# if decoded == msg:
-#     print(True)
+if decoded == msg:
+    print(True)
 

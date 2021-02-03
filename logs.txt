@@ -93,3 +93,6 @@ the least on a sheet.
 If I can find the ones I know changed the least, I can make the brightness changes extremely hard to notice. Like += 3 or something like this. 
 The average absolute difference in the first 50 frames is 1.88, so just encode in the macroblocks that change below the average, so the max brightness
 will change by in the encoding could possibly be as low as 2 or 3 in this test video. 
+
+I'm gonna make blocks.py as way to be able to read in a spreadsheet and get anytime the original brightness - encoded brightness changed by 
+<= 1.8 Then I can use the list of places that program returns in brightness.py
