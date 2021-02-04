@@ -1,36 +1,35 @@
 import pandas as pd
 import numpy as np
-import csv
+
 
 FILE_NAME = "brightness_comparisons_16x16_frames1-50.csv"
+class Blocks:
+    def __init__(self, FILE_NAME="brightness_comparisons_16x16_frames1-50.csv"):
+        self.name = FILE_NAME
+        self.data = pd.read_csv(self.name)
+        self.list_of_special_blocks = self.getSpecialBlocks()
 
-def getCSV():
-    data = pd.read_csv(FILE_NAME)
+    def getSpecialBlocks(self):
+        specialBlocks = []
 
-    return data
+        for i in range(len(self.data.columns)):
+            k = str(i)
+            column = self.data[[k]]
+            tempList = []
+            for j in range(len(self.data.index)):
+                if column.iloc[j].item() <= 1.8:
+                    tempList.append(j)
 
-def getSpecialBlocks(data):
-    specialBlocks = []
+            specialBlocks.append(tempList)
+        
+        specialBlocks = np.array(specialBlocks)
+        return specialBlocks
 
-    for i in range(len(data.columns)):
-        k = str(i)
-        column = data[[k]]
-        tempList = []
-        for j in range(len(data.index)):
-            if column.iloc[j].item() <= 1.8:
-                tempList.append(j)
 
-        specialBlocks.append(tempList)
-    
-    specialBlocks = np.array(specialBlocks)
-    return specialBlocks
-
-data = getCSV()
-special_blocks = getSpecialBlocks(data)
-special_blocks = pd.DataFrame(special_blocks, columns=["0"])
-# special_blocks.to_csv("special_blocks.csv")
-print("...\n")
-print(special_blocks)
+# data = Blocks()
+# print(data.list_of_special_blocks[49])
+# print("...\n")
+# # print(special_blocks)
 
 
 '''

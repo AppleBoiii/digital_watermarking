@@ -96,3 +96,11 @@ will change by in the encoding could possibly be as low as 2 or 3 in this test v
 
 I'm gonna make blocks.py as way to be able to read in a spreadsheet and get anytime the original brightness - encoded brightness changed by 
 <= 1.8 Then I can use the list of places that program returns in brightness.py
+
+I did this, and the decoded message was off by 1 bit. 
+"secret" in binary -> 011100110110010101100011011100100110010101110100
+what was decoded   -> 011100110110010101100011011000100110010101110100
+                                                 ^
+
+I'm going to change the name of the file to brightness_macroblocks.py to differentiate it from another file I am going to make to
+encode in the whole frame rather than a macroblock. 
