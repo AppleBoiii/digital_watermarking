@@ -9,10 +9,8 @@ ENCODED_NAME = "encoded1.avi"
 
 #gets width, height, and middle-height of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
-WIDTH = VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH)
-WIDTH = (int)(WIDTH)
-HEIGHT = VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT) 
-HEIGHT = (int)(HEIGHT)
+WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
+HEIGHT = int(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
 MIDDLE = (int)(HEIGHT/2)
 
 N = 16
@@ -267,7 +265,7 @@ msg = binaryString(b"secret") #the result of this is 1 bit off.
 # print(len(msg))
 # encode(msg, arr)
 # print("\n")
-print("decoding...")
+# print("decoding...")
 decoded = decode(ENCODED_NAME, arr)
 print(decoded)
 # if msg in decoded:

@@ -104,3 +104,227 @@ what was decoded   -> 011100110110010101100011011000100110010101110100
 
 I'm going to change the name of the file to brightness_macroblocks.py to differentiate it from another file I am going to make to
 encode in the whole frame rather than a macroblock. 
+
+Now I'm going to encode in a very large section of the frame. The idea is that the larger area encoded in, the less it will be changed
+and more resistant to something like cropping attacks. For now I'm going to try the whole frame. 
+
+Overall, each frame's abs diff in brightness was ~~6. I put all the frame abs diff below
+{
+    frame: 0 diff: 6.070050998263923
+    frame: 1 diff: 5.941722005208305
+    frame: 2 diff: 5.47330295138886 
+    frame: 3 diff: 5.836940104166672
+    frame: 4 diff: 5.311745876736097
+    frame: 5 diff: 5.695124782986113
+    frame: 6 diff: 5.406266276041663
+    frame: 7 diff: 5.781589626736093
+    frame: 8 diff: 5.456631944444439
+    frame: 9 diff: 5.900735677083333
+    frame: 10 diff: 5.4382660590277965
+    frame: 11 diff: 5.833468967013857
+    frame: 12 diff: 5.661278211805552
+    frame: 13 diff: 5.663096788194423
+    frame: 14 diff: 5.364989149305529
+    frame: 15 diff: 5.747574869791663
+    frame: 16 diff: 5.412222222222226
+    frame: 17 diff: 5.879178602430557
+    frame: 18 diff: 5.388155381944443
+    frame: 19 diff: 5.864916449652753
+    frame: 20 diff: 5.334585503472226
+    frame: 21 diff: 5.871944444444409
+    frame: 22 diff: 5.3498198784722035
+    frame: 23 diff: 5.962897135416654
+    frame: 24 diff: 5.552923177083358
+    frame: 25 diff: 5.9856553819444684
+    frame: 26 diff: 5.40140733506945
+    frame: 27 diff: 5.972296006944418
+    frame: 28 diff: 5.336259765624959
+    frame: 29 diff: 5.913129340277806
+    frame: 30 diff: 5.3171983506944684
+    frame: 31 diff: 5.889373914930559
+    frame: 32 diff: 5.348136935763932
+    frame: 33 diff: 5.913432074652803
+    frame: 34 diff: 5.383951822916686
+    frame: 35 diff: 5.924800347222231
+    frame: 36 diff: 5.652126736111086
+    frame: 37 diff: 5.951203342013912
+    frame: 38 diff: 5.418162977430541
+    frame: 39 diff: 5.806193576388864
+    frame: 40 diff: 5.5875249565971785
+    frame: 41 diff: 5.693317057291665
+    frame: 42 diff: 5.333413628472215
+    frame: 43 diff: 5.811893446180591
+    frame: 44 diff: 5.359031032986138
+    frame: 45 diff: 5.754122178819443
+    frame: 46 diff: 5.601021050347185
+    frame: 47 diff: 5.722526041666697
+    frame: 48 diff: 5.663037109375011
+    frame: 49 diff: 5.902276475694464
+    frame: 50 diff: 5.441774088541706
+    frame: 51 diff: 5.8659743923611245
+    frame: 52 diff: 5.616183810763914
+    frame: 53 diff: 5.761744791666672
+    frame: 54 diff: 5.448468967013923
+    frame: 55 diff: 5.816552734374966
+    frame: 56 diff: 5.63468098958333
+    frame: 57 diff: 5.7627343749999795
+    frame: 58 diff: 5.549715711805561
+    frame: 59 diff: 5.722297092013889
+    frame: 60 diff: 5.558763020833339
+    frame: 61 diff: 5.61417317708333
+    frame: 62 diff: 5.49307400173609
+    frame: 63 diff: 5.688883463541686
+    frame: 64 diff: 5.595957031250009
+    frame: 65 diff: 5.711586371527801
+    frame: 66 diff: 5.540120442708371
+    frame: 67 diff: 5.63537868923612
+    frame: 68 diff: 5.499455295138887
+    frame: 69 diff: 5.652826605902817
+    frame: 70 diff: 5.552505425347249
+    frame: 71 diff: 5.641434461805545
+    frame: 72 diff: 5.613967013888896
+    frame: 73 diff: 5.583417968750041
+    frame: 74 diff: 5.348033854166658
+    frame: 75 diff: 5.637562934027812
+    frame: 76 diff: 5.540239800347251
+    frame: 77 diff: 5.672649739583335
+    frame: 78 diff: 5.53589409722224
+    frame: 79 diff: 5.712111545138896
+    frame: 80 diff: 5.512953559027778
+    frame: 81 diff: 5.613654513888889
+    frame: 82 diff: 5.3368641493055975
+    frame: 83 diff: 5.715414496527785
+    frame: 84 diff: 5.633261718749964
+    frame: 85 diff: 5.847970920138891
+    frame: 86 diff: 5.639417317708308
+    frame: 87 diff: 5.706522352430568
+    frame: 88 diff: 5.453547092013935
+    frame: 89 diff: 5.918691406249991
+    frame: 90 diff: 5.429565972222235
+    frame: 91 diff: 5.886895616319464
+    frame: 92 diff: 5.6433496093749795
+    frame: 93 diff: 5.756280381944407
+    frame: 94 diff: 5.444274088541647
+    frame: 95 diff: 5.851218532986138
+    frame: 96 diff: 5.619806857638878
+    frame: 97 diff: 5.619541015624975
+    frame: 98 diff: 5.316046006944475
+    frame: 99 diff: 5.833739149305586
+    frame: 100 diff: 5.319435763888919
+    frame: 101 diff: 5.842054036458364
+    frame: 102 diff: 5.360283203124993
+    frame: 103 diff: 5.90120768229167
+    frame: 104 diff: 5.389331597222224
+    frame: 105 diff: 5.973822699652828
+    frame: 106 diff: 5.35074435763886
+    frame: 107 diff: 5.903617621527758
+    frame: 108 diff: 5.567888454861134
+    frame: 109 diff: 5.942127821180577
+    frame: 110 diff: 5.3642968749999795
+    frame: 111 diff: 5.918213975694471
+    frame: 112 diff: 5.365240885416654
+    frame: 113 diff: 5.9204698350694684
+    frame: 114 diff: 5.3762391493055475
+    frame: 115 diff: 5.953286675347215
+    frame: 116 diff: 5.42557183159721
+    frame: 117 diff: 5.896296657986113
+    frame: 118 diff: 5.33183268229169
+    frame: 119 diff: 5.692046440972206
+    frame: 120 diff: 5.638685980902778
+    frame: 121 diff: 5.936231553819425
+    frame: 122 diff: 5.37467664930557
+    frame: 123 diff: 5.868735894097199
+    frame: 124 diff: 5.436537543402778
+    frame: 125 diff: 5.867042100694448
+    frame: 126 diff: 5.382070312499991
+    frame: 127 diff: 5.754824218750002
+    frame: 128 diff: 5.459601779513889
+    frame: 129 diff: 5.911023220486129
+    frame: 130 diff: 5.417428385416656
+    frame: 131 diff: 5.859927300347238
+    frame: 132 diff: 5.710531684027785
+    frame: 133 diff: 5.699337022569466
+    frame: 134 diff: 5.388965928819459
+    frame: 135 diff: 5.770287543402787
+    frame: 136 diff: 5.588108723958385
+    frame: 137 diff: 5.731648220486136
+    frame: 138 diff: 5.377087673611129
+    frame: 139 diff: 5.8431922743055225
+    frame: 140 diff: 5.336514756944496
+    frame: 141 diff: 5.862364366319412
+    frame: 142 diff: 5.331165364583342
+    frame: 143 diff: 5.9191395399305975
+    frame: 144 diff: 5.581599392361113
+    frame: 145 diff: 5.9735058593749955
+    frame: 146 diff: 5.404168836805582
+    frame: 147 diff: 5.940555555555534
+    frame: 148 diff: 5.318671875000007
+    frame: 149 diff: 5.785866970486097
+    frame: 150 diff: 5.404232855902762
+    frame: 151 diff: 5.932669270833344
+    frame: 152 diff: 5.342355685763891
+    frame: 153 diff: 5.87215603298614
+    frame: 154 diff: 5.345257161458335
+    frame: 155 diff: 5.891379123263903
+    frame: 156 diff: 5.654020182291674
+    frame: 157 diff: 5.988028428819405
+    frame: 158 diff: 5.380806206597185
+    frame: 159 diff: 5.71923285590276
+    frame: 160 diff: 5.608772786458303
+    frame: 161 diff: 5.777127821180557
+    frame: 162 diff: 5.584581163194457
+    frame: 163 diff: 5.627382812500002
+    frame: 164 diff: 5.542529296874989
+    frame: 165 diff: 5.71729058159724
+    frame: 166 diff: 5.534141710069434
+    frame: 167 diff: 5.656106770833333
+    frame: 168 diff: 5.664263237847194
+    frame: 169 diff: 5.965300564236088
+    frame: 170 diff: 5.466599392361104
+    frame: 171 diff: 5.853404947916658
+    frame: 172 diff: 5.646593967013871
+    frame: 173 diff: 5.769631076388919
+    frame: 174 diff: 5.448103298611159
+    frame: 175 diff: 5.818496093750014
+    frame: 176 diff: 5.599499782986129
+    frame: 177 diff: 5.762065972222217
+    frame: 178 diff: 5.544957682291681
+    frame: 179 diff: 5.695209418402783
+    frame: 180 diff: 5.5702897135416265
+    frame: 181 diff: 5.613224826388887
+    frame: 182 diff: 5.52450412326391
+    frame: 183 diff: 5.673900824652776
+    frame: 184 diff: 5.559705946180543
+    frame: 185 diff: 5.711426866319414
+    frame: 186 diff: 5.5707671440972035
+    frame: 187 diff: 5.712928602430566
+    frame: 188 diff: 5.5255805121527715
+    frame: 189 diff: 5.715633680555527
+    frame: 190 diff: 5.5485297309027715
+    frame: 191 diff: 5.651950954861093
+    frame: 192 diff: 5.631011284722206
+    frame: 193 diff: 5.609004991319409
+    frame: 194 diff: 5.546916232638921
+    frame: 195 diff: 5.605007595486086
+    frame: 196 diff: 5.343042534722201
+    frame: 197 diff: 5.837849392361136
+    frame: 198 diff: 5.350024956597224
+    frame: 199 diff: 5.739578993055545
+}
+To be safe, using a signal 2x the diff would be best, but that would probably be very visible. I encoded with signal 13 and got 
+the following resuls
+011100110110010101100011011100100110010101110100 --> original
+   .        .   .  ..  .        .  .  .  ... .
+011001110111010111111010011100101111011100000011
+13 bits off. Pretty bad.
+
+Encoded with 15:
+011100110110010101100011011100100110010101110100 --> original
+      ..        .    .       .  .     . .    
+011100000110010111100111011101101110011111110100 --> encoded
+8 bits off. Not as bad. 
+
+Ok so I put signal at 7 and put in a 144 bit msg. 
+011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100 --> original
+011010000110000100100000011010010110110100100000011000100110111101110011011010000011000001100001011011010010000001100011011011110110011101101100
+5 bits off. yeehaw
