@@ -195,8 +195,8 @@ def decode(N, msgLength):
             msg += "0"
         else:
             msg += "1"
-    # print(decodedMessageBinary)
-    # return decodedMessageBinary
+    print(decodedMessageBinary)
+    return decodedMessageBinary
     print(msg)
     return msg
 

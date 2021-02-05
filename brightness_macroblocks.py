@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 
 # VIDEO_NAME = input("Gimme video name + file extension: ")
-VIDEO_NAME = "test-tube.mp4"
+VIDEO_NAME = "chromecast.mp4"
 # ENCODED_NAME = input("give desired name of encoded video (rn only .avi extensions work: ")
-ENCODED_NAME = "encoded1.avi"
+ENCODED_NAME = "encoded_chromecast.avi"
 
 #gets width, height, and middle-height of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
@@ -17,9 +17,9 @@ N = 16
 SIZE_OF_BLOCK = N
 NUM_OF_BLOCKS = (int)((HEIGHT * WIDTH) / (SIZE_OF_BLOCK*SIZE_OF_BLOCK))
 
+FPS = VIDEO.get(cv2.CAP_PROP_FPS)
+
 FRAME_COUNT = 50
-BLOCK_VALUES = [2823, 2739, 2817, 2562]
-BLOCK_VALUES = np.array(BLOCK_VALUES)
 
 def binaryString(msg): #takes the message and returns the binary version of it
 	output = ""
@@ -43,6 +43,7 @@ these two functions work together
 get blocks returns a list of all the NxN blocks of the video, as well as the overall brightness of those blocks
 '''
 
+#gets the brightness of a block(block is expressed as 4 coordinates) in a frame
 def getBlockBrightness(coords, frame):
     brightnessList = []
     x1, y1, x2, y2 = coords[0], coords[1], coords[2], coords[3]
@@ -56,6 +57,7 @@ def getBlockBrightness(coords, frame):
 
     return int(avgBrightness)
 
+#returns all the blocks in a frame
 def getBlocks(frame):
     global NUM_OF_BLOCKS
     global SIZE_OF_BLOCK
@@ -77,16 +79,18 @@ def getBlocks(frame):
     #print(len(block_list))
     return block_list
 
+#reads from a csv and gets the blocks with a diff less than 2
+#p.s: the csv file is createad from compare.py
 def getBlocksThatChangeTheLeast(file_name="brightness_comparisons_16x16_frames1-50.csv"):
     data = pd.read_csv(file_name)
     specialBlocks = []
-
-    for i in range(len(data.columns)): #goes through every column
+                    #this doesn't always have to be 1. depends on format of file.
+    for i in range(len(data.columns)-1): #goes through every column
         k = str(i)
         column = data[[k]]  #get the current column 
         tempList = []
         for j in range(len(data.index)):    #go through every single row of that column
-            if column.iloc[j].item() < 2:    #if the elem @ column is certain value, append it
+            if column.iloc[j].item() < 1:    #if the elem @ column is certain value, append it
                 tempList.append(j)
 
         specialBlocks.append(tempList)
@@ -103,7 +107,7 @@ original file.
 def emptyEncode():
     #MP42 for mp4
     #DIVX for avi
-    encodedVideo = cv2.VideoWriter("empty_encoded.avi", cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    encodedVideo = cv2.VideoWriter("empty_encoded.avi", cv2.VideoWriter_fourcc(*'DIVX') , FPS, (WIDTH, HEIGHT)) #video writer object to store modified frames into
     while(True):
         ret, frame = VIDEO.read()
         if ret:
@@ -120,11 +124,13 @@ def encode(msg, arr):
     msg = list(msg)
     #MP42 for mp4
     #DIVX for avi
-    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'DIVX') , 25, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    encodedVideo = cv2.VideoWriter(ENCODED_NAME, cv2.VideoWriter_fourcc(*'DIVX') , FPS, (WIDTH, HEIGHT)) #video writer object to store modified frames into
 
     frame_num = 0 #keeps count of frames
     # a = 0
 
+
+    N = 7 #signal strength
     while(True):
         ret, frame = VIDEO.read()
 
@@ -145,8 +151,6 @@ def encode(msg, arr):
 
                     
                         x1, y1, x2, y2 = block[0],block[1], block[2], block[3]
-
-                        N = 7
 
                         brightness = getBlockBrightness([x1, y1, x2, y2], frame)
                         remainder = brightness % N
@@ -198,6 +202,7 @@ def decode(videoFileName, arr):
     # msgList = []
     frame_num = 0
 
+    N = 7 #signal strength
     while(True):
         ret, frame = encoded.read()
 
@@ -208,31 +213,32 @@ def decode(videoFileName, arr):
                 for block in blocks:
                     z = blocks.index(block)
                     if z in arr[frame_num]:
-                        if len(decodedMessageBinary) >= 48:
+                        if len(decodedMessageBinary) >= 88:
                             # msgList.append(decodedMessageBinary)
                             # decodedMessageBinary = ""
                             break
 
-                        N = 7
                         x1 = block[0]
                         y1 = block[1]
                         x2 = block[2]
                         y2 = block[3]
 
                         brightness = getBlockBrightness([x1, y1, x2, y2], frame)
-                        remainder = int(brightness%N)
-                        lowerMultiple = brightness-remainder
-                        upperMultiple = brightness+(N-remainder)
-                        x = 0
+                        x = brightness / N
+                        x = round(x)
+                        # remainder = int(brightness%N)
+                        # lowerMultiple = brightness-remainder
+                        # upperMultiple = brightness+(N-remainder)
+                        # x = 0
 
-                        if brightness - lowerMultiple > upperMultiple - brightness:
-                            x = upperMultiple
+                        # if brightness - lowerMultiple > upperMultiple - brightness:
+                        #     x = upperMultiple
                         
-                        else:
-                            x = lowerMultiple
+                        # else:
+                        #     x = lowerMultiple
                         
                         
-                        x /= N
+                        # x /= N
 
                         if x%2 == 0:
                             decodedMessageBinary += "0"
@@ -253,24 +259,26 @@ def decode(videoFileName, arr):
     # return msgList
 
 
-arr = getBlocksThatChangeTheLeast()
+def checkAccuracy(msg, decoded_msg):
+    wrong_count = 0
+    for bit in range(len(msg)):
+        if msg[bit] != decoded_msg[bit]:
+            wrong_count += 1
 
-'''
-if 1 <= frame_count <= len(arr)-1:
-'''
+    print(wrong_count)
 
+arr = getBlocksThatChangeTheLeast("brightness_comparisons_chromcast_16x16_frame50.csv")
 
-msg = binaryString(b"secret") #the result of this is 1 bit off. 
-# print(f"The message is {msg}")
+msg = binaryString(b"very secret") #the result of this is 1 bit off. 
+print(f"The message is {msg}")
 # print(len(msg))
 # encode(msg, arr)
 # print("\n")
-# print("decoding...")
+
+print("decoding...")
 decoded = decode(ENCODED_NAME, arr)
 print(decoded)
-# if msg in decoded:
-#     print(True)
-#     print(msg)
+checkAccuracy(msg, decoded)
 
 '''
 no worky, try idea:

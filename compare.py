@@ -1,18 +1,19 @@
 import cv2 
 import numpy as np
 import pandas as pd
-import math
 
 SIZE_OF_BLOCK = 16
 
-VIDEO = "test-tube.mp4"
+VIDEO = "chromecast.mp4"
 VIDEO = cv2.VideoCapture(VIDEO)
 
 NUM_OF_FRAMES = int(VIDEO.get(cv2.CAP_PROP_FRAME_COUNT))
 HEIGHT = int(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
 WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
+FPS = VIDEO.get(cv2.CAP_PROP_FPS)
 
-ENCODED= "empty_encoded.avi"
+
+ENCODED= f"empty_encoded_1.avi"
 ENCODED = cv2.VideoCapture(ENCODED)
 ENC_NUM_OF_FRAMES = int(ENCODED.get(cv2.CAP_PROP_FRAME_COUNT))
 
@@ -71,6 +72,23 @@ def getBlocksBrightness(vid_frame, enc_frame):
     
     return squares_brightness
 
+
+def emptyEncode():
+    #MP42 for mp4
+    #DIVX for avi
+    encodedVideo = cv2.VideoWriter(f"empty_encoded_1.avi", cv2.VideoWriter_fourcc(*'DIVX') , FPS, (WIDTH, HEIGHT)) #video writer object to store modified frames into
+    while(True):
+        ret, frame = VIDEO.read()
+        if ret:
+            encodedVideo.write(frame)
+        else:
+             break
+    
+    VIDEO.release()
+    encodedVideo.release()
+    print("Success!")
+    cv2.destroyAllWindows()
+
 def getData(frame):
     frame_count = 0
     data_list = []
@@ -89,11 +107,13 @@ def getData(frame):
             frame_count += 1
     return data_list
 
+# emptyEncode()
+
 print("Starting...")
 arr = np.array(getData(FRAME_COUNT))
 df = pd.DataFrame(arr)
 df = df.transpose() #flips columns and rows
 print(df)
 
-df.to_excel(f"brightness_comparisons_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}_frame{FRAME_COUNT}.xlsx")
+df.to_excel(f"brightness_comparisons_chromcast_{SIZE_OF_BLOCK}x{SIZE_OF_BLOCK}_frame{FRAME_COUNT}.xlsx")
 print("Excel sheet saved.")
