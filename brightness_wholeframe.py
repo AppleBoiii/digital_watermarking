@@ -9,7 +9,7 @@ MIDDLE = (int)(HEIGHT/2)
 FPS = VIDEO.get(cv2.CAP_PROP_FPS)
 LENGTH = VIDEO.get(cv2.CAP_PROP_FRAME_COUNT)
 
-ENC_NAME = "encoded.avi"
+ENC_NAME = "crop_encoded.avi"
 #ENC_VIDEO = cv2.VideoCapture("encoded.avi")
 
 def getFrameBrightness(img=None):
@@ -160,6 +160,15 @@ def encode(msg, N):
     encodedVideo.release()
     print("Success!")
 
+
+def checkAccuracy(msg, decoded_msg):
+    wrong_count = 0
+    for bit in range(len(msg)):
+        if msg[bit] != decoded_msg[bit]:
+            wrong_count += 1
+
+    print(wrong_count)
+
 def decode(N, msgLength):
     decodedMessageBinary = ""
     enc = cv2.VideoCapture(ENC_NAME)
@@ -178,6 +187,7 @@ def decode(N, msgLength):
         else:
             break
         frame_count += 1
+
     msg = ""
 
     for letter in decodedMessageBinary:
@@ -186,25 +196,20 @@ def decode(N, msgLength):
         else:
             msg += "1"
     # print(decodedMessageBinary)
+    # return decodedMessageBinary
     print(msg)
     return msg
 
-n = 7
+n = 17
 msg = binaryString(b"hi im josh im cool")
 x = len(msg)
 print(x)
 print(msg)
 
 # encode(msg, n)
-# print("decoding...")
+print("decoding...")
 decoded_msg = decode(n, x)
-# print("Done!")
-wrong_count = 0
-for bit in range(len(msg)):
-    if msg[bit] != decoded_msg[bit]:
-        wrong_count += 1
+print("Done!")
 
-print(wrong_count)
-
-
+checkAccuracy(msg, decoded_msg)
 
