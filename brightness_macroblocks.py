@@ -2,10 +2,13 @@ import cv2
 import numpy as np
 import pandas as pd
 
+
+BLOCKS_THAT_CHANGE_LEAST = "C:\\Users\\staln\\OneDrive\\Documents\\GitHub\\digital_watermarking\\excel sheets\\brightness_comparisons_chromcast_16x16_frame50.csv"
+
 # VIDEO_NAME = input("Gimme video name + file extension: ")
 VIDEO_NAME = "chromecast.mp4"
 # ENCODED_NAME = input("give desired name of encoded video (rn only .avi extensions work: ")
-ENCODED_NAME = "encoded_chromecast.avi"
+ENCODED_NAME = "macroblock_encoded_chromecast.avi"
 
 #gets width, height, and middle-height of the image
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
@@ -13,12 +16,11 @@ WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
 HEIGHT = int(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
 MIDDLE = int(HEIGHT/2)
 
-N = 16
-SIZE_OF_BLOCK = N
+SIGNAL_STRENGTH = 7
+SIZE_OF_BLOCK = 16
 NUM_OF_BLOCKS = (int)((HEIGHT * WIDTH) / (SIZE_OF_BLOCK*SIZE_OF_BLOCK))
 
 FPS = VIDEO.get(cv2.CAP_PROP_FPS)
-
 FRAME_COUNT = 50
 
 def binaryString(msg): #takes the message and returns the binary version of it
@@ -81,7 +83,8 @@ def getBlocks(frame):
 
 #reads from a csv and gets the blocks with a diff less than 2
 #p.s: the csv file is createad from compare.py
-def getBlocksThatChangeTheLeast(file_name="brightness_comparisons_16x16_frames1-50.csv"):
+def getBlocksThatChangeTheLeast(file_name=BLOCKS_THAT_CHANGE_LEAST):
+    # print(file_name)
     data = pd.read_csv(file_name)
     specialBlocks = []
                     #this doesn't always have to be 1. depends on format of file.
@@ -130,7 +133,7 @@ def encode(msg, arr):
     # a = 0
 
 
-    N = 7 #signal strength
+    N = SIGNAL_STRENGTH #signal strength
     while(True):
         ret, frame = VIDEO.read()
 
@@ -202,7 +205,7 @@ def decode(videoFileName, arr):
     # msgList = []
     frame_num = 0
 
-    N = 7 #signal strength
+    N = SIGNAL_STRENGTH #signal strength
     while(True):
         ret, frame = encoded.read()
 
@@ -258,7 +261,6 @@ def decode(videoFileName, arr):
     return decodedMessageBinary
     # return msgList
 
-
 def checkAccuracy(msg, decoded_msg):
     wrong_count = 0
     for bit in range(len(msg)):
@@ -267,11 +269,11 @@ def checkAccuracy(msg, decoded_msg):
 
     print(wrong_count)
 
-arr = getBlocksThatChangeTheLeast("brightness_comparisons_chromcast_16x16_frame50.csv")
+arr = getBlocksThatChangeTheLeast()
 
 msg = binaryString(b"very secret") #the result of this is 1 bit off. 
-print(f"The message is {msg}")
-# print(len(msg))
+print(f"The message is {msg} and {len(msg)} bits long.")
+
 # encode(msg, arr)
 # print("\n")
 
@@ -279,8 +281,3 @@ print("decoding...")
 decoded = decode(ENCODED_NAME, arr)
 print(decoded)
 checkAccuracy(msg, decoded)
-
-'''
-no worky, try idea:
-encode whole image or very large squares sof image, that way watermark can't be cropped out
-'''
