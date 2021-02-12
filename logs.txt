@@ -2,15 +2,15 @@
 
 First, I went and found a video to test all of my code on. "test-tube.mp4" (https://pixabay.com/videos/test-tubes-experiment-science-lab-5451/)
 I also downloaded the Lenna.png image off of Google, since Lenna is commonly used as a test image in Computer Science.
-I set up Project.py, wrote a brightness function that return the average intensity of each pixel, and wrote an encode and decode function.
+First, I wrote a brightness function that return the average intensity of each pixel, and wrote an encode and decode function.
 In the encode function, it went through each frame and visited a specific pixel to get the brightness. If the binary message bit was a 0, 
 and the brightness was even, nothing happened. If bit was 0 and brightness odd, brightness += 1. If bit = 1 and brightness = even, brightness += 1. 
 I did this twice, saved once as .mp4 and again as .avi. However this did not work because of the compression / encoding used in the video formats.
 
 1/20 - 1/23:
-Made brightnessTest.py to keep track of different functions I would be cycling in and out of Project.py
+Made brightnessTest.py to keep track of different functions I would be cycling in and out of the project files. 
 
-Diff way of encoding:
+Decided to make a more obvious, easy way of encoding to get started:
 Choose a specific group(10x10)of pixels in each frame to make either all white, or all black:
     all white = 0
     all black = 1
@@ -21,9 +21,9 @@ To Decode:
       if black, write 1  
 
 This method ended up working well. Although I had to be a little more vague with the decoding, if every pixel had each color value > 200, I counted that as white.
-Then, anything less than that would be considered black and marked as a 1. I think this works. Now I want to see how far down I can scale this.
+Then, anything less than that would be considered black and marked as a 1.
 
-Since that worked, I put a 6 long line in the middle of the video. Same as ebfore, white pixel = 0, black pixel = 1. The message was still there,
+Since that worked, I put a 6 bit long line in the middle of the video. Same as before, white pixel = 0, black pixel = 1. The message was still there,
 but a little damaged. 
 
 01110100011010000110010101110010011001010010000001101001011100110010000001101001001000000111001101100101011000110111101001100101011101000010000001101000011001010111001001100101 
@@ -32,17 +32,17 @@ but a little damaged.
 I made compare.py and compared the pixel values of the first frame of the video to the encoded video. The pixels were only changed within 5%. 
 Some 7%.
 
-I swapped ways to get brightness. Same results.
 
 I recorded the changes in brightness between the normal video and encoded video. I split the videos into 16x16 blocks, and took the average
 pixel brightness of those blocks. I also got the individual change in brightness of every pixel as an aside. I went and saved graphs of these
 excel sheets as SVGs. Tbh there looks like there are some spots to use rather than others, but for the most part they all seem to have changed
 a similar amount. 
 
-The changes in brightness showed that they only changed by a max of 3. So I tried to make the encoding based on even / odd multiples greater than 3.
-This did not work very well for messages since they were still changed. 
+The changes in brightness showed that they only changed by a max of 3. So I am going to try to
+make the encoding based on even / odd multiples greater than 3.
 
 -------
+
 On even blocks, use four. On odd blocks, use five. 
 If the bit is a 1, change the brightness to the nearest odd multiple of 4 or 5 
 If the bit is 0, change the brightness to the nearest even multiple of 4 or 5
@@ -74,6 +74,7 @@ Encode 8 bits in each of these frames:
         2562 - 8
 
 This did not work very well. Very tired will look at later. 
+
 ------
 
 Okay so I'm going to try the above again, but this time I'm only going to store one bit in the least touched block in frame. If that works,
@@ -94,8 +95,8 @@ If I can find the ones I know changed the least, I can make the brightness chang
 The average absolute difference in the first 50 frames is 1.88, so just encode in the macroblocks that change below the average, so the max brightness
 will change by in the encoding could possibly be as low as 2 or 3 in this test video. 
 
-I'm gonna make blocks.py as way to be able to read in a spreadsheet and get anytime the original brightness - encoded brightness changed by 
-<= 1.8 Then I can use the list of places that program returns in brightness_macroblocks.py
+I made a script that can read in a spreadsheet and get anytime the original brightness - encoded brightness changed by 
+<= 1.8 or any other value I want. Then I can use the list of places that program returns in brightness_macroblocks.py
 
 I did this, and the decoded message was off by 1 bit. 
 "secret" in binary -> 011100110110010101100011011100100110010101110100
@@ -327,7 +328,7 @@ Encoded with 15:
 Ok so I put signal at 7 and put in a 144 bit msg. 
 011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100 --> original
 011010000110000100100000011010010110110100100000011000100110111101110011011010000011000001100001011011010010000001100011011011110110011101101100
-5 bits off. yeehaw
+5 bits off. Best so far. 
 
 --
 I'm going to test how robust it is. I cropped video by 5% on all sides in Premier. 
@@ -362,3 +363,15 @@ These were results, same conditions as before I changed the decode fun.
 0111011001100101011100100111100100100000011100110110010101100011011100100110010101110100 --> original
 0111011001100101011100100111101100100000011100110111010101100011011100100110011101110101
 Still 4 bits off. 
+
+
+------
+What to do now:
+make sure this logs file looks nice and explains everything well 
+get the data for tests i did not record data for
+start making graphs and diagrams of all this
+do quadchart
+do paper 
+do slidedeck
+make video
+(not exactly in this order)

@@ -11,7 +11,7 @@ ENCODED_NAME = "encoded_chromecast.avi"
 VIDEO = cv2.VideoCapture(VIDEO_NAME)
 WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
 HEIGHT = int(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
-MIDDLE = (int)(HEIGHT/2)
+MIDDLE = int(HEIGHT/2)
 
 N = 16
 SIZE_OF_BLOCK = N
