@@ -364,14 +364,21 @@ These were results, same conditions as before I changed the decode fun.
 0111011001100101011100100111101100100000011100110111010101100011011100100110011101110101
 Still 4 bits off. 
 
+144 bit message ,signal strength 7
+011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100
+011010000111100100100000011010010110110111100000011011101111111101110011011010000011000001101001011011010010000011100011011011110110111101101100
+8 bits off
+
+
 
 ------
 What to do now:
 make sure this logs file looks nice and explains everything well 
 get the data for tests i did not record data for
-start making graphs and diagrams of all this
+start making graphs
 do quadchart
-do paper 
+do paper
+do logbook
 do slidedeck
-make video
+make videox
 (not exactly in this order)

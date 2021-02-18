@@ -216,7 +216,7 @@ def decode(videoFileName, arr):
                 for block in blocks:
                     z = blocks.index(block)
                     if z in arr[frame_num]:
-                        if len(decodedMessageBinary) >= 88:
+                        if len(decodedMessageBinary) >= 144:
                             # msgList.append(decodedMessageBinary)
                             # decodedMessageBinary = ""
                             break
@@ -271,7 +271,7 @@ def checkAccuracy(msg, decoded_msg):
 
 arr = getBlocksThatChangeTheLeast()
 
-msg = binaryString(b"very secret") #the result of this is 1 bit off. 
+msg = binaryString(b"hi im josh im cool") #the result of this is 1 bit off. 
 print(f"The message is {msg} and {len(msg)} bits long.")
 
 # encode(msg, arr)
