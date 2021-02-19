@@ -2,15 +2,15 @@ import cv2
 import numpy as np
 import pandas as pd
 
-VIDEO = cv2.VideoCapture("test-tube.mp4")
+VIDEO = cv2.VideoCapture("chromecast.mp4")
 WIDTH = int(VIDEO.get(cv2.CAP_PROP_FRAME_WIDTH))
 HEIGHT = int(VIDEO.get(cv2.CAP_PROP_FRAME_HEIGHT))
 MIDDLE = (int)(HEIGHT/2)
 FPS = VIDEO.get(cv2.CAP_PROP_FPS)
 LENGTH = VIDEO.get(cv2.CAP_PROP_FRAME_COUNT)
 
-ENC_NAME = "crop_encoded.avi"
-#ENC_VIDEO = cv2.VideoCapture("encoded.avi")
+ENC_NAME = "chromecast_frame_encoded.avi"
+# ENC_VIDEO = cv2.VideoCapture("chromecast_frame_encoded.avi")
 
 def getFrameBrightness(img=None):
     sum_pixels = img.sum()
@@ -160,7 +160,6 @@ def encode(msg, N):
     encodedVideo.release()
     print("Success!")
 
-
 def checkAccuracy(msg, decoded_msg):
     wrong_count = 0
     for bit in range(len(msg)):
@@ -200,7 +199,7 @@ def decode(N, msgLength):
     print(msg)
     return msg
 
-n = 17
+n = 7
 msg = binaryString(b"hi im josh im cool")
 x = len(msg)
 print(x)
@@ -209,7 +208,18 @@ print(msg)
 # encode(msg, n)
 print("decoding...")
 decoded_msg = decode(n, x)
+new_msg = ""
+for bit in decoded_msg:
+    if bit == "1":
+        new_msg += "0"
+    else:
+        new_msg += "1"
+
 print("Done!")
 
-checkAccuracy(msg, decoded_msg)
+
+checkAccuracy(msg, new_msg)
+print(msg)
+print(new_msg)
+#only 1 off this time 
 

@@ -32,6 +32,7 @@ but a little damaged.
 I made compare.py and compared the pixel values of the first frame of the video to the encoded video. The pixels were only changed within 5%. 
 Some 7%.
 
+1/23 - 1/30
 
 I recorded the changes in brightness between the normal video and encoded video. I split the videos into 16x16 blocks, and took the average
 pixel brightness of those blocks. I also got the individual change in brightness of every pixel as an aside. I went and saved graphs of these
@@ -41,7 +42,8 @@ a similar amount.
 The changes in brightness showed that they only changed by a max of 3. So I am going to try to
 make the encoding based on even / odd multiples greater than 3.
 
--------
+
+1/30 - 2/2
 
 On even blocks, use four. On odd blocks, use five. 
 If the bit is a 1, change the brightness to the nearest odd multiple of 4 or 5 
@@ -75,7 +77,7 @@ Encode 8 bits in each of these frames:
 
 This did not work very well. Very tired will look at later. 
 
-------
+2/2 - 2/5
 
 Okay so I'm going to try the above again, but this time I'm only going to store one bit in the least touched block in frame. If that works,
 we will go up. 
@@ -94,6 +96,8 @@ the least on a sheet.
 If I can find the ones I know changed the least, I can make the brightness changes extremely hard to notice. Like += 3 or something like this. 
 The average absolute difference in the first 50 frames is 1.88, so just encode in the macroblocks that change below the average, so the max brightness
 will change by in the encoding could possibly be as low as 2 or 3 in this test video. 
+
+2/5 - 2/8
 
 I made a script that can read in a spreadsheet and get anytime the original brightness - encoded brightness changed by 
 <= 1.8 or any other value I want. Then I can use the list of places that program returns in brightness_macroblocks.py
@@ -330,7 +334,8 @@ Ok so I put signal at 7 and put in a 144 bit msg.
 011010000110000100100000011010010110110100100000011000100110111101110011011010000011000001100001011011010010000001100011011011110110011101101100
 5 bits off. Best so far. 
 
---
+2/8 - 2/11
+
 I'm going to test how robust it is. I cropped video by 5% on all sides in Premier. 
 011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100 --> Original
 111111111111110000000000111111111111111111111111111111000000000111111111111111101111111111111100000000011111111111111111111111101111100000000000
@@ -341,8 +346,7 @@ I tried using a strong signal (17) and did the same, cropped all four corners by
 000010000110100000000000011000010000110100000000011010000000000001100000000000000000000001101000000000000000000000000011000011110110100000000000
 This is 40 bits off. Still not very good. 
 
---
-Going to run tests on a different video "chromecast.mp4". 
+Now I'm going to run tests on a different video "chromecast.mp4". 
 
 For the macroblocks method, I used the same signal of 7. Same process as before, find the parts of the video that change the least
 and encode specifically within those blocks.
@@ -364,21 +368,21 @@ These were results, same conditions as before I changed the decode fun.
 0111011001100101011100100111101100100000011100110111010101100011011100100110011101110101
 Still 4 bits off. 
 
-144 bit message ,signal strength 7
+Macroblock
+144 bit message, signal strength 7
 011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100
 011010000111100100100000011010010110110111100000011011101111111101110011011010000011000001101001011011010010000011100011011011110110111101101100
 8 bits off
 
+Wholeframe
+144 bit message, signal strength 7
+011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001100011011011110110111101101100
+    011010000110100100100000011010010110110100100000011010100110111101110011011010000010000001101001011011010010000001101011011011110110111101101100
+1 bit off
 
+2/15 - 2/17
+Collected all my academic sources, I wrote the research paper for the project.
 
-------
-What to do now:
-make sure this logs file looks nice and explains everything well 
-get the data for tests i did not record data for
-start making graphs
-do quadchart
-do paper
-do logbook
-do slidedeck
-make videox
-(not exactly in this order)
+2/17 - 2/18
+Made a slidedeck and will now finish up with everything else that is due tomorrow. 
+
